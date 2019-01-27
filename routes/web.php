@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 Route::post('/ussd', 'USSDController@ussd')->name('hela.ussd');
+
+Route::get("/test","USSDController@test");

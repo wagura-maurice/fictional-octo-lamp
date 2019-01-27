@@ -29,13 +29,17 @@ Route::post('/test', function (Request $request) {
 
     if ($text == "") {
     	if (\Helahub::chkUser($phoneNumber)) {
+
 		    $response  = "CON Welcome to Helahub \n";
 		    $response .= "1. My Account \n";
 		    $response .= "2. My phone number";
+
 		} else {
+
 		    $response  = "CON Welcome to Helahub, Please Register to continue. \n";
 		    $response .= "3. Register \n";
 		    $response .= "0. Exit";
+
 		}
         // $response="CON Welcome to the registration portal.\nPlease enter you full name";
     } else if ($text == "3") {
