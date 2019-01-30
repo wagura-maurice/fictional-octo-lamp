@@ -16,11 +16,8 @@ class USSDController extends Controller
 		$text        = $request->text;
 		$level       = explode("*", $text);
 
-		if (\Helahub::chkUser($phoneNumber)) {
-			$response  = "CON Welcome to Helahub \n";
-			$response .= "1. My Account \n";
-			$response .= "2. My phone number";
-
+		if (!\Helahub::chkUser($phoneNumber)) {
+			$response = $this->_authenticated($text, $level, $phoneNumber);
 		} else {
 			$response = $this->_unauthenticated($text, $level);
 		}
@@ -28,7 +25,6 @@ class USSDController extends Controller
 
 		echo $response;
 	}
-
 
 	public function _unauthenticated($text, $level){
 		$screenoutput ="END Thank you for registering"; //ending message/none is found
@@ -74,8 +70,60 @@ class USSDController extends Controller
 		return $screenoutput;
 	}
 
-	public function _authenticated($text, $level){
-	
+	public function _authenticated($text, $level, $phoneNumber=null){
+		$checker = true;	//check if merchant or client
+		return ($checker)?$this->_loaduthenticatedMerchantMenu($text, $level):$this->_loaduthenticatedClientMenu($text, $level);/// ="END Thank you for accessing"; //ending message/none is fou
 	}
 
+	public function _loaduthenticatedMerchantMenu($text, $level){
+		$screenoutput ="END Thankyou for accessing"; //ending mesor accesssage/none is found		
+		if ($text == "") {
+			$screenoutput  = "CON Welcome to Helahub Merchant \n";
+			$screenoutput .= "1. Check Balance \n";
+			$screenoutput .= "2. Move Money \n";
+			$screenoutput .= "3. Load Money \n";
+			$screenoutput .= "4. Pay Merchant \n";
+			$screenoutput .= "5. Transaction Statements";
+		}
+
+		switch ($text) {
+			case "1":{
+				# code...
+		    	$screenoutput = "CON Enter your Password";
+				break;	
+			}
+
+			case "0":{
+				# code...
+		    	$screenoutput = "END Goodbye";
+				break;	
+			}
+			
+		}
+
+		if(isset($level[1]) && $level[1]!="" && !isset($level[2])){
+			$screenoutput = $this->authenticatePassword(); 
+		 }
+		return $screenoutput;
+	}
+
+
+	public function authenticatePassword(){
+		$passwordcorect = true;
+		return ($passwordcorect)?"END You have 1250KES \n":"CON Wow Incorrect password \n";
+	}
+
+
+
+	public function _loaduthenticatedClientMenu($text, $level){
+		$screenoutput ="END Thank you for accessing"; //ending message/none is found		
+		if ($text == "") {
+			$screenoutput  = "CON Welcome to Helahub Client, . \n";
+			$screenoutput .= "1. Check Balance \n";
+			$screenoutput .= "2. Load Money \n";
+			$screenoutput .= "3. Pay Merchant \n";
+			$screenoutput .= "4. Transaction Statements";
+		}
+		return $screenoutput;
+	}
 }
